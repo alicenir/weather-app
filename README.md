@@ -13,12 +13,35 @@ Open http://localhost:5173.
 
 ## Deploy with Portainer
 
-1. Build the image: from the repo root, run `docker build -t weather-app .` (assumes a Dockerfile exists or will exist: multi-stage build, Node 20 to build with Vite, then nginx:alpine to serve the dist folder on port 80).
-2. In Portainer, go to Containers, click Add container.
-3. Name it weather-app.
-4. Image: weather-app:latest (or the image you built/pushed).
-5. Map host port 8080 to container port 80.
-6. Deploy the container.
-7. Open http://your-server-ip:8080 to see the app.
+The repo includes a multi-stage `Dockerfile` (Node 20 + Vite build → `nginx:alpine` on port 80) and a `.dockerignore`.
 
-If you use Portainer's registry or a remote Docker host, build and push the image first: `docker tag weather-app your-registry/weather-app:latest` then `docker push your-registry/weather-app:latest` and use that image name in step 4.
+### Option A: Portainer stack (build from Git)
+
+1. In Portainer, go to **Stacks** → **Add stack**.
+2. Name it `weather-app`.
+3. **Build method:** Web editor. Paste:
+
+```yaml
+services:
+  weather-app:
+    build: https://github.com/alicenir/weather-app.git#main
+    pull_policy: build
+    image: weather-app:latest
+    container_name: weather-app
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+```
+
+4. Deploy the stack. Portainer clones the repo and builds the image from the `Dockerfile`.
+5. Open `http://your-server-ip:8080`.
+
+### Option B: Build locally, then add a container
+
+1. From the repo root: `docker build -t weather-app .`
+2. In Portainer, go to **Containers** → **Add container**.
+3. Name: `weather-app`. Image: `weather-app:latest`.
+4. Map host port `8080` to container port `80`.
+5. Deploy, then open `http://your-server-ip:8080`.
+
+If you use Portainer's registry or a remote Docker host, build and push the image first: `docker tag weather-app your-registry/weather-app:latest` then `docker push your-registry/weather-app:latest` and use that image name in the stack or container settings.
