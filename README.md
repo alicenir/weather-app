@@ -29,19 +29,19 @@ services:
     image: weather-app:latest
     container_name: weather-app
     ports:
-      - "8080:80"
+      - "8888:80"
     restart: unless-stopped
 ```
 
 4. Deploy the stack. Portainer clones the repo and builds the image from the `Dockerfile`.
-5. Open `http://your-server-ip:8080`.
+5. Open `http://your-server-ip:8888`.
 
 ### Option B: Build locally, then add a container
 
 1. From the repo root: `docker build -t weather-app .`
 2. In Portainer, go to **Containers** → **Add container**.
 3. Name: `weather-app`. Image: `weather-app:latest`.
-4. Map host port `8080` to container port `80`.
-5. Deploy, then open `http://your-server-ip:8080`.
+4. Map host port `8888` to container port `80`.
+5. Deploy, then open `http://your-server-ip:8888`.
 
 If you use Portainer's registry or a remote Docker host, build and push the image first: `docker tag weather-app your-registry/weather-app:latest` then `docker push your-registry/weather-app:latest` and use that image name in the stack or container settings.
